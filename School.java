@@ -13,6 +13,7 @@ public class School extends Organization{
 		this.top100 = top100;	
 	}
 	
+	// Methods...
 	public void setTop100(boolean top100){ this.top100 = top100;}
 	
 	public boolean getTop100(){ return top100;}

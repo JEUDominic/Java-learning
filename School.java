@@ -5,16 +5,16 @@ public class School extends Organization{
 	private String name;
 	private String country;
 	private String city;
-	private boolean top100;
+	private int top100;// 1 for true, 0 for false...
 	
 	// Constructor...
-	School(String name, String country , String city, boolean top100){
+	public School(String name, String country , String city, int top100){
 		super(name,country,city);
 		this.top100 = top100;	
 	}
 	
 	// Methods...
-	public void setTop100(boolean top100){ this.top100 = top100;}
+	public void setTop100(char top100){ this.top100 = top100;}
 	
-	public boolean getTop100(){ return top100;}
+	public int getTop100(){ return top100;}
 }

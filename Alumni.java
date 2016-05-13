@@ -27,6 +27,7 @@ public class Alumni {
 		this.major = major;
 		this.graYear = graYear;
 		this.state = 0;
+		this.id = 0;
 	}
 	
 	// Methods...

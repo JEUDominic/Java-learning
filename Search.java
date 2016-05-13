@@ -29,7 +29,11 @@ public class Search {
 			String search="SELECT `id` FROM `j430003023`.`company` WHERE `name` LIKE '" + name + "'";
 			Statement state = connection.createStatement();
 			ResultSet result = state.executeQuery(search);
-			result.next();
+			if(result.next() == false) {
+				state.close();
+				connection.close();
+				return -1;
+			}
 			int reslutID = result.getInt("id");
 			state.close();
 			connection.close();
@@ -58,7 +62,44 @@ public class Search {
 			String search="SELECT `id` FROM `j430003023`.`school` WHERE `name` LIKE '" + name + "'";
 			Statement state = connection.createStatement();
 			ResultSet result = state.executeQuery(search);
-			result.next();
+			if(result.next() == false) {
+				state.close();
+				connection.close();
+				return -1;
+			}
+			int reslutID = result.getInt("id");
+			state.close();
+			connection.close();
+			return reslutID;
+		}
+		catch(ClassNotFoundException e){
+			e.printStackTrace();
+			return -1;
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			return -2;
+		
+		}
+	}
+	
+	// Input the name of a school, check if it exist in the database...
+	// If it exist, return the id of school...
+	// If it does't exist, return -1...
+	// If there are other wrong, return -2...
+	public static int alumniCheck(String studentID){
+		try{
+			Class.forName(Driver);
+			Connection connection = DriverManager.getConnection(url, username, password);
+			String search="SELECT `id` FROM `j430003023`.`alumni` WHERE `studentID` LIKE '" + studentID + "'";
+			Statement state = connection.createStatement();
+			ResultSet result = state.executeQuery(search);
+			if(result.next() == false) {
+				state.close();
+				connection.close();
+				return -1;
+			}
 			int reslutID = result.getInt("id");
 			state.close();
 			connection.close();
@@ -94,7 +135,6 @@ public class Search {
 			Alumni alumni = new Alumni(studentID,name,sex,major,state,graYear,id);
 		
 			
-			
 			statement.close();
 			connection.close();
 			return alumni;
@@ -116,7 +156,7 @@ public class Search {
 	// If the state is at home(0), return 0...
 	// If the studentID is not found in database, return -1...
 	// If there are some other wrong, return -2...
-	public static int state(String studentID){
+	public static int alumniState(String studentID){
 		try{
 			Class.forName(Driver);
 			Connection connection = DriverManager.getConnection(url, username, password);
@@ -144,7 +184,7 @@ public class Search {
 	// Input the student ID, return the corresponding id...
 	// If the studentID is not found in database, return -1...
 	// If there are some other wrong, return -2...
-	public static int id(String studentID){
+	public static int alumniID(String studentID){
 		try{
 			Class.forName(Driver);
 			Connection connection = DriverManager.getConnection(url, username, password);
@@ -188,7 +228,7 @@ public class Search {
 				connection.close();
 				School orgnazation = new School(sname,scountry,scity,top100);
 				return orgnazation;
-			}else{
+			}else if(state == 2){
 				Class.forName(Driver);
 				Connection connection = DriverManager.getConnection(url, username, password);
 				String search="SELECT * FROM `j430003023`.`company` WHERE `id` LIKE '" + id + "'";
@@ -213,65 +253,82 @@ public class Search {
 		}
 		return null;
 	}
-
 	
-	public static String getPassword(String id){
+	public static Organization orgnization(String studentID){
+		int id = Search.alumniID(studentID);
+		int state = Search.alumniState(studentID);
+		if(state == 1){
+			School orgnization = (School) Search.orgnization(id, state);
+		}else if(state == 2){
+			Company orgnization = (Company) Search.orgnization(id, state);
+		}
+			return null;
+		
+	}
+
+	// Input the condition, like name, country, city, top100, search them in the database...
+	// If there is shool(s) satisfied these condition, return them in an array of School objet...
+	// If there is no school satisfied, return null...
+	public static School[] school(String name, String country, String city, int top100){
 		try{
 			Class.forName(Driver);
 			Connection connection = DriverManager.getConnection(url, username, password);
-			String sql="SELECT `password` FROM `j430003023`.`user` WHERE `id` = " + id;
-			Statement state = connection.createStatement();
-			ResultSet result = state.executeQuery(sql);
-			result.next();
-			String resultpassword = result.getString("password");
-			state.close();
+			// Edit sql sentence according by parameters...
+			String sql="SELECT * FROM `j430003023`.`school` WHERE ";
+			if(name != null){ sql = sql + "`name` LIKE '" + name + "'";}
+			if(name != null && (country != null || city != null || top100 != -1)){ sql = sql + "AND";}
+			if(country != null){ sql = sql + "`country` LIKE '" + country +"' ";}
+			if(country != null && (city != null || top100 != -1)){ sql = sql + "AND";}
+			if(city != null){ sql = sql + "`city` LIKE '" + city +"' ";}
+			if(city != null && top100 != -1){ sql = sql + "AND";}
+			if(top100 != -1){ sql = sql+ "`top100` =" + top100;}
+			
+			// The end of sql sentence...
+			if(name == null && country == null && city == null && top100 == -1){
+				sql = sql + "1";
+			}
+			
+			Statement search = connection.createStatement();
+			
+			// Get the row number...
+			ResultSet r = search.executeQuery(sql);
+			r.last();
+			int row = r.getRow();
+			System.out.println(row);
+			
+			ResultSet result = search.executeQuery(sql);
+			result.next(); 
+			// Preparing for the store school[] information...
+			
+			String[] sname = new String[row];
+			String[] scountry = new String[row];
+			String[] scity = new String[row];
+			int[] stop100 = new int[row];
+			School[] school = new School[row];
+			int i;
+			for(i = 0;; i++){
+				sname[i] = result.getString("name");
+				scountry[i] = result.getString("country");
+				scity[i] = result.getString("city");
+				stop100[i] = result.getInt("top100");
+				
+				school[i] = new School(sname[i], scountry[i], scity[i], stop100[i]);
+				if(!result.next()) break;
+			}
+			
+			search.close();
 			connection.close();
-			return resultpassword;
+			return school;
 		}
 		catch(ClassNotFoundException e){
 			e.printStackTrace();
-			return "Not Found";
+			return null;
 		}
 		catch(SQLException e) {
 			e.printStackTrace();
-			return e.getMessage();
+			return null;
 		
 		}
 	}
-	public static String insertID(String id, char[] user_password){
-		try{
-			Class.forName(Driver);
-			
-			
-			Connection connection = DriverManager.getConnection(url, username, password);
-			
-		
-			String sql = "INSERT INTO `j430003023`.`user` (`id`, `password`) VALUES ('"+ id +"','"+user_password+"')";
-			
-		
-			Statement state = connection.createStatement();
-			
 	
-			state.executeUpdate(sql);
-			
-			
-			state.close();
-			connection.close();
-			
-			return "Successful";
-			
-		}catch(ClassNotFoundException e) {
-		
-			e.printStackTrace();
-		
-			return "Not Found";
-		
-		} catch(SQLException e) {
-		
-			e.printStackTrace();
-		
-			return e.getMessage();
-		
-		}
-	}
 }

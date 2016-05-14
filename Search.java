@@ -18,104 +18,6 @@ public class Search {
 	private static String password="123456";
 	private static String Driver="com.mysql.jdbc.Driver";
 	
-	// Input the name of a company, check if it exist in the database...
-	// If it exist, return the id of company...
-	// If it does't exist, return -1...
-	// If there are other wrong, return -2...
-	public static int companyCheck(String name){
-		try{
-			Class.forName(Driver);
-			Connection connection = DriverManager.getConnection(url, username, password);
-			String search="SELECT `id` FROM `j430003023`.`company` WHERE `name` LIKE '" + name + "'";
-			Statement state = connection.createStatement();
-			ResultSet result = state.executeQuery(search);
-			if(result.next() == false) {
-				state.close();
-				connection.close();
-				return -1;
-			}
-			int reslutID = result.getInt("id");
-			state.close();
-			connection.close();
-			return reslutID;
-		}
-		catch(ClassNotFoundException e){
-			e.printStackTrace();
-			return -1;
-		}
-		catch(SQLException e) {
-			e.printStackTrace();
-			e.getMessage();
-			return -2;
-		
-		}
-	}
-	
-	// Input the name of a school, check if it exist in the database...
-	// If it exist, return the id of school...
-	// If it does't exist, return -1...
-	// If there are other wrong, return -2...
-	public static int schoolCheck(String name){
-		try{
-			Class.forName(Driver);
-			Connection connection = DriverManager.getConnection(url, username, password);
-			String search="SELECT `id` FROM `j430003023`.`school` WHERE `name` LIKE '" + name + "'";
-			Statement state = connection.createStatement();
-			ResultSet result = state.executeQuery(search);
-			if(result.next() == false) {
-				state.close();
-				connection.close();
-				return -1;
-			}
-			int reslutID = result.getInt("id");
-			state.close();
-			connection.close();
-			return reslutID;
-		}
-		catch(ClassNotFoundException e){
-			e.printStackTrace();
-			return -1;
-		}
-		catch(SQLException e) {
-			e.printStackTrace();
-			e.getMessage();
-			return -2;
-		
-		}
-	}
-	
-	// Input the name of a school, check if it exist in the database...
-	// If it exist, return the id of school...
-	// If it does't exist, return -1...
-	// If there are other wrong, return -2...
-	public static int alumniCheck(String studentID){
-		try{
-			Class.forName(Driver);
-			Connection connection = DriverManager.getConnection(url, username, password);
-			String search="SELECT `id` FROM `j430003023`.`alumni` WHERE `studentID` LIKE '" + studentID + "'";
-			Statement state = connection.createStatement();
-			ResultSet result = state.executeQuery(search);
-			if(result.next() == false) {
-				state.close();
-				connection.close();
-				return -1;
-			}
-			int reslutID = result.getInt("id");
-			state.close();
-			connection.close();
-			return reslutID;
-		}
-		catch(ClassNotFoundException e){
-			e.printStackTrace();
-			return -1;
-		}
-		catch(SQLException e) {
-			e.printStackTrace();
-			e.getMessage();
-			return -2;
-		
-		}
-	}
 	
 	// Input the student ID, return an object of student...
 	public static Alumni alumni(String studentID){
@@ -161,11 +63,11 @@ public class Search {
 			Class.forName(Driver);
 			Connection connection = DriverManager.getConnection(url, username, password);
 			String search="SELECT `state` FROM `j430003023`.`alumni` WHERE `studentID` LIKE '" + studentID + "'";
-			Statement state = connection.createStatement();
-			ResultSet result = state.executeQuery(search);
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery(search);
 			result.next();
 			int reslutState = result.getInt("state");
-			state.close();
+			statement.close();
 			connection.close();
 			return reslutState;
 		}
@@ -189,11 +91,11 @@ public class Search {
 			Class.forName(Driver);
 			Connection connection = DriverManager.getConnection(url, username, password);
 			String search="SELECT `id` FROM `j430003023`.`alumni` WHERE `studentID` LIKE '" + studentID + "'";
-			Statement state = connection.createStatement();
-			ResultSet result = state.executeQuery(search);
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery(search);
 			result.next();
 			int reslutID = result.getInt("id");
-			state.close();
+			statement.close();
 			connection.close();
 			return reslutID;
 		}
@@ -217,14 +119,14 @@ public class Search {
 				Class.forName(Driver);
 				Connection connection = DriverManager.getConnection(url, username, password);
 				String search="SELECT * FROM `j430003023`.`school` WHERE `id` LIKE '" + id + "'";
-				Statement school = connection.createStatement();
-				ResultSet result = school.executeQuery(search);
+				Statement statement = connection.createStatement();
+				ResultSet result = statement.executeQuery(search);
 				result.next();
 				String sname = result.getString("name");
 				String scountry = result.getString("country");
 				String scity = result.getString("city");
 				int top100 = result.getInt("top100");
-				school.close();
+				statement.close();
 				connection.close();
 				School orgnazation = new School(sname,scountry,scity,top100);
 				return orgnazation;
@@ -232,13 +134,13 @@ public class Search {
 				Class.forName(Driver);
 				Connection connection = DriverManager.getConnection(url, username, password);
 				String search="SELECT * FROM `j430003023`.`company` WHERE `id` LIKE '" + id + "'";
-				Statement company = connection.createStatement();
-				ResultSet result = company.executeQuery(search);
+				Statement statement = connection.createStatement();
+				ResultSet result = statement.executeQuery(search);
 				result.next();
 				String cname = result.getString("name");
 				String ccountry = result.getString("country");
 				String ccity = result.getString("city");
-				company.close();
+				statement.close();
 				connection.close();
 				Company orgnazation = new Company(cname,ccountry,ccity);
 				return orgnazation;
@@ -259,8 +161,10 @@ public class Search {
 		int state = Search.alumniState(studentID);
 		if(state == 1){
 			School orgnization = (School) Search.orgnization(id, state);
+			return orgnization;
 		}else if(state == 2){
 			Company orgnization = (Company) Search.orgnization(id, state);
+			return orgnization;
 		}
 			return null;
 		
@@ -288,16 +192,16 @@ public class Search {
 				sql = sql + "1";
 			}
 			
-			Statement search = connection.createStatement();
+			Statement statement = connection.createStatement();
 			
 			// Get the row number...
-			ResultSet r = search.executeQuery(sql);
+			ResultSet r = statement.executeQuery(sql);
 			r.last();
 			int row = r.getRow();
-			System.out.println(row);
 			
-			ResultSet result = search.executeQuery(sql);
-			result.next(); 
+			
+			ResultSet result = statement.executeQuery(sql);
+			if(!result.next()) return null; 
 			// Preparing for the store school[] information...
 			
 			String[] sname = new String[row];
@@ -305,8 +209,8 @@ public class Search {
 			String[] scity = new String[row];
 			int[] stop100 = new int[row];
 			School[] school = new School[row];
-			int i;
-			for(i = 0;; i++){
+			
+			for(int i = 0;; i++){
 				sname[i] = result.getString("name");
 				scountry[i] = result.getString("country");
 				scity[i] = result.getString("city");
@@ -316,7 +220,7 @@ public class Search {
 				if(!result.next()) break;
 			}
 			
-			search.close();
+			statement.close();
 			connection.close();
 			return school;
 		}
@@ -331,4 +235,83 @@ public class Search {
 		}
 	}
 	
+	// Input the student state (1 for school, 2 for company) and corresponding organization id, return if the organization is oversea ...
+	// If the organization is oversea, return 1...
+	// If the organization is not oversea, return 0...
+	// If can not find the orgnization in database, return -1...
+	// If there are some other wrong, return -2...
+	public static int oversea(int state, int id){
+		try{
+			if(state != 1 && state != 2) return -3;
+			Class.forName(Driver);
+			Connection connection = DriverManager.getConnection(url, username, password);
+			
+			String search="SELECT * FROM `j430003023`.";
+			
+			if(state == 1) {
+				search = search +"`school` WHERE `id` = " + id + " AND `country` LIKE" + "'china'";
+			}else{
+				search = search + "`company` WHERE `id` = " + id  + " AND `country` LIKE" + "'china'";
+			}
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery(search);
+			if( !result.next()) {
+				statement.close();
+				connection.close();
+				return 1;
+			}else{
+				statement.close();
+				connection.close();
+				return 0;
+			}
+		}
+		catch(ClassNotFoundException e){
+			e.printStackTrace();
+			return -1;
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			return -2;
+		
+		}
+	}
+	
+	// Input the school id, check if it is top 100...
+	// If the school is top 100, return 1...
+	// If the school is not top 100, return 0...
+	// If can not find the school in database, return -1...
+	// If there are some other wrong, return -2...
+	public static int top100(int id){
+		try{
+			Class.forName(Driver);
+			Connection connection = DriverManager.getConnection(url, username, password);
+			
+			String search="SELECT * FROM `j430003023`.`school` WHERE `id` = " + id + " AND `top100` = 1";
+			
+			
+			Statement statement = connection.createStatement();
+			ResultSet result = statement.executeQuery(search);
+			if( result.next() == false) {
+				statement.close();
+				connection.close();
+				return 0;
+			}else{
+				statement.close();
+				connection.close();
+				return 1;
+			}
+		}
+		catch(ClassNotFoundException e){
+			e.printStackTrace();
+			return -1;
+		}
+		catch(SQLException e) {
+			e.printStackTrace();
+			e.getMessage();
+			return -2;
+		
+		}
+	
+	}
 }

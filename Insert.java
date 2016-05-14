@@ -31,17 +31,17 @@ public class Insert {
 			
 			// Store the company information to database...
 			String store = "INSERT INTO `j430003023`.`company` (`id`, `name`, `country`, `city`) VALUES (NULL, '"+company.getName()+"', '"+ company.getCountry()+"', '"+company.getCity()+"')";
-			Statement state = connection.createStatement();
-			state.executeUpdate(store);	
-			state.close();
+			Statement statement = connection.createStatement();
+			statement.executeUpdate(store);	
+			statement.close();
 			
 			// Return the id of company...
 			String search="SELECT `id` FROM `j430003023`.`company` WHERE `name` LIKE '" + company.getName() +"'";
-			state = connection.createStatement();
-			ResultSet result = state.executeQuery(search);
+			statement = connection.createStatement();
+			ResultSet result = statement.executeQuery(search);
 			result.next();
 			int reslutID= result.getInt("id");
-			state.close();
+			statement.close();
 			
 			// Close database...
 			connection.close();
@@ -73,17 +73,17 @@ public class Insert {
 			
 			// Store the school information to database...
 			String store = "INSERT INTO `j430003023`.`school` (`id`, `name`, `country`, `city`, `top100`) VALUES (NULL, '"+school.getName()+"', '"+ school.getCountry()+"', '"+school.getCity()+"')";
-			Statement state = connection.createStatement();
-			state.executeUpdate(store);	
-			state.close();
+			Statement statement = connection.createStatement();
+			statement.executeUpdate(store);	
+			statement.close();
 			
 			// Return the id of school...
 			String search="SELECT `id` FROM `j430003023`.`school` WHERE `name` LIKE '" + school.getName() +"'";
-			state = connection.createStatement();
-			ResultSet result = state.executeQuery(search);
+			statement = connection.createStatement();
+			ResultSet result = statement.executeQuery(search);
 			result.next();
 			int reslutID= result.getInt("id");
-			state.close();
+			statement.close();
 			
 			// Close database...
 			connection.close();
@@ -115,17 +115,17 @@ public class Insert {
 			
 			// Store the alumni information to database...
 			String store = "INSERT INTO `j430003023`.`alumni` (`studentID`, `name`, `sex`, `major`, `state`, `graYear`, `id`) VALUES ('"+ alumni.getStudentID() + "', '" + alumni.getName() + "', '" + alumni.getSex() + "', '" + alumni.getMajor() + "', '" + alumni.getState() +"', '" + alumni.getGraYear() + "', '" + alumni.getID() + "')";
-			Statement state = connection.createStatement(); 
-			state.executeUpdate(store);	
-			state.close();
+			Statement statement = connection.createStatement(); 
+			statement.executeUpdate(store);	
+			statement.close();
 			
 			// Return the id of company...
 			String search="SELECT `id` FROM `j430003023`.`alumni` WHERE `studentID` LIKE '" + alumni.getStudentID() +"'";
-			state = connection.createStatement();
-			ResultSet result = state.executeQuery(search);
+			statement = connection.createStatement();
+			ResultSet result = statement.executeQuery(search);
 			result.next();
-			int reslutID= result.getInt("id");
-			state.close();
+			int reslutID = result.getInt("id");
+			statement.close();
 			
 			// Close database...
 			connection.close();

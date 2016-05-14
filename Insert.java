@@ -23,6 +23,9 @@ public class Insert {
 	
 	// Store a company to database...
 	// Return the id of company...
+	// Return -1, something wrong in class...
+	// Return -2, something wrong in sql...
+	// Return -4, insert unsuccessful...
 	public static int company(Company company){
 		try{
 			// Connect to database...
@@ -39,7 +42,11 @@ public class Insert {
 			String search="SELECT `id` FROM `j430003023`.`company` WHERE `name` LIKE '" + company.getName() +"'";
 			statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(search);
-			result.next();
+			if( !result.next() ) {
+				statement.close();
+				connection.close();
+				return -4;
+			}
 			int reslutID= result.getInt("id");
 			statement.close();
 			
@@ -65,6 +72,9 @@ public class Insert {
 	
 	// Store a school to database...
 	// Return the id of school...
+	// Return -1, something wrong in class...
+	// Return -2, something wrong in sql...
+	// Return -4, insert unsuccessful...
 	public static int school(School school){
 		try{
 			// Connect to database...
@@ -81,7 +91,11 @@ public class Insert {
 			String search="SELECT `id` FROM `j430003023`.`school` WHERE `name` LIKE '" + school.getName() +"'";
 			statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(search);
-			result.next();
+			if( !result.next() ) {
+				statement.close();
+				connection.close();
+				return -4;
+			}
 			int reslutID= result.getInt("id");
 			statement.close();
 			
@@ -107,6 +121,9 @@ public class Insert {
 	
 	// Store a alumni to database...
 	// Return the corresponding id of alumni...
+	// Return -1, something wrong in class...
+	// Return -2, something wrong in sql...
+	// Return -4, insert unsuccessful...
 	public static int alumni(Alumni alumni){
 		try{
 			// Connect to database...
@@ -123,7 +140,12 @@ public class Insert {
 			String search="SELECT `id` FROM `j430003023`.`alumni` WHERE `studentID` LIKE '" + alumni.getStudentID() +"'";
 			statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(search);
-			result.next();
+			if( !result.next() ) {
+				statement.close();
+				connection.close();
+				return -4;
+				// If can not find the corresponding alumni in database, return -4...
+			}
 			int reslutID = result.getInt("id");
 			statement.close();
 			

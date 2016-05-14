@@ -27,7 +27,11 @@ public class Search {
 			String search="SELECT * FROM `j430003023`.`alumni` WHERE `studentID` LIKE '" + studentID + "'";
 			Statement statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(search);
-			result.next();
+			if( !result.next() ) {
+				statement.close();
+				connection.close();
+				return null;
+			}
 			String name = result.getString("name");
 			int sex = result.getInt("sex");
 			String major = result.getString("major");
@@ -56,8 +60,9 @@ public class Search {
 	// If the state is company(2), return 2...
 	// If the state is school(1), return 1...
 	// If the state is at home(0), return 0...
-	// If the studentID is not found in database, return -1...
+	// If there are something worng in class, return -1...
 	// If there are some other wrong, return -2...
+	// If can not find alumni information in database, return -4...
 	public static int alumniState(String studentID){
 		try{
 			Class.forName(Driver);
@@ -65,7 +70,12 @@ public class Search {
 			String search="SELECT `state` FROM `j430003023`.`alumni` WHERE `studentID` LIKE '" + studentID + "'";
 			Statement statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(search);
-			result.next();
+			if( !result.next() ) {
+				statement.close();
+				connection.close();
+				return -4;
+				// If can not find the corresponding alumni in database, return -4...
+			}
 			int reslutState = result.getInt("state");
 			statement.close();
 			connection.close();
@@ -84,8 +94,9 @@ public class Search {
 	}
 	
 	// Input the student ID, return the corresponding id...
-	// If the studentID is not found in database, return -1...
+	// If theere something wrong in class, return -1...
 	// If there are some other wrong, return -2...
+	// If can not find alumni information in database, return -4...
 	public static int alumniID(String studentID){
 		try{
 			Class.forName(Driver);
@@ -93,7 +104,12 @@ public class Search {
 			String search="SELECT `id` FROM `j430003023`.`alumni` WHERE `studentID` LIKE '" + studentID + "'";
 			Statement statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(search);
-			result.next();
+			if( !result.next() ) {
+				statement.close();
+				connection.close();
+				return -4;
+				// If can not find the corresponding alumni in database, return -4...
+			}
 			int reslutID = result.getInt("id");
 			statement.close();
 			connection.close();
@@ -121,7 +137,11 @@ public class Search {
 				String search="SELECT * FROM `j430003023`.`school` WHERE `id` LIKE '" + id + "'";
 				Statement statement = connection.createStatement();
 				ResultSet result = statement.executeQuery(search);
-				result.next();
+				if( !result.next() ) {
+					statement.close();
+					connection.close();
+					return null;
+				}
 				String sname = result.getString("name");
 				String scountry = result.getString("country");
 				String scity = result.getString("city");
@@ -136,7 +156,11 @@ public class Search {
 				String search="SELECT * FROM `j430003023`.`company` WHERE `id` LIKE '" + id + "'";
 				Statement statement = connection.createStatement();
 				ResultSet result = statement.executeQuery(search);
-				result.next();
+				if( !result.next() ) {
+					statement.close();
+					connection.close();
+					return null;
+				}
 				String cname = result.getString("name");
 				String ccountry = result.getString("country");
 				String ccity = result.getString("city");
@@ -238,8 +262,9 @@ public class Search {
 	// Input the student state (1 for school, 2 for company) and corresponding organization id, return if the organization is oversea ...
 	// If the organization is oversea, return 1...
 	// If the organization is not oversea, return 0...
-	// If can not find the orgnization in database, return -1...
+	// If something wrong in class, return -1...
 	// If there are some other wrong, return -2...
+	// If the input state is invalid, return -3..
 	public static int oversea(int state, int id){
 		try{
 			if(state != 1 && state != 2) return -3;
@@ -280,7 +305,7 @@ public class Search {
 	// Input the school id, check if it is top 100...
 	// If the school is top 100, return 1...
 	// If the school is not top 100, return 0...
-	// If can not find the school in database, return -1...
+	// If something wrong in class, return -1...
 	// If there are some other wrong, return -2...
 	public static int top100(int id){
 		try{
@@ -292,7 +317,7 @@ public class Search {
 			
 			Statement statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(search);
-			if( result.next() == false) {
+			if( !result.next()) {
 				statement.close();
 				connection.close();
 				return 0;

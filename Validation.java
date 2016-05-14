@@ -27,7 +27,7 @@ public class Validation {
 			if(result.next() == false) {
 				state.close();
 				connection.close();
-				return -1;
+				return -4;
 			}
 			int reslutID = result.getInt("id");
 			state.close();
@@ -60,7 +60,7 @@ public class Validation {
 			if(result.next() == false) {
 				state.close();
 				connection.close();
-				return -1;
+				return -4;
 			}
 			int reslutID = result.getInt("id");
 			state.close();
@@ -93,7 +93,7 @@ public class Validation {
 			if(result.next() == false) {
 				state.close();
 				connection.close();
-				return -1;
+				return -4;
 			}
 			int reslutID = result.getInt("id");
 			state.close();
